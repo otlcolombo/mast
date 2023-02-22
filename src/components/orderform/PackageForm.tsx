@@ -10,6 +10,35 @@ import { StepProps } from './Props';
 
 export default function PackageForm(props: StepProps) {
 
+    const [formValues, setFormValues] = useState({
+        productDescription: props.order.productDescription,
+        product: props.order.product,
+        actualWeight: props.order.actualWeight,
+        noOfPackages: props.order.noOfPackages,
+        length: props.order.length,
+        width: props.order.width,
+        height: props.order.height,
+        customsValue: props.order.customsValue
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormValues({ ...formValues, [event.target.name]: event.target.value });
+    };
+
+    const handleNext = () => {
+        props.setOrder({
+            ...props.order,
+            productDescription: formValues.productDescription,
+            product: formValues.product,
+            actualWeight: formValues.actualWeight,
+            noOfPackages: formValues.noOfPackages,
+            length: formValues.length,
+            width: formValues.width,
+            height: formValues.height,
+            customsValue: formValues.customsValue
+        });
+        props.handleNext();
+    };
 
     return (
         <React.Fragment>
@@ -24,6 +53,8 @@ export default function PackageForm(props: StepProps) {
                         maxRows={4}
                         fullWidth
                         variant="standard"
+                        value={formValues.productDescription}
+                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -33,6 +64,8 @@ export default function PackageForm(props: StepProps) {
                             aria-label="product"
                             name="product"
                             row
+                            value={formValues.product}
+                            onChange={handleChange}
                         >
                             <FormControlLabel
                                 value="document"
@@ -56,6 +89,8 @@ export default function PackageForm(props: StepProps) {
                         fullWidth
                         autoComplete="family-name"
                         variant="standard"
+                        value={formValues.actualWeight}
+                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -67,6 +102,8 @@ export default function PackageForm(props: StepProps) {
                         fullWidth
                         autoComplete="1"
                         variant="standard"
+                        value={formValues.noOfPackages}
+                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -77,6 +114,8 @@ export default function PackageForm(props: StepProps) {
                                 name="length"
                                 label="Length"
                                 variant="standard"
+                                value={formValues.length}
+                                onChange={handleChange}
                             />
                         </Grid>
                         <Grid item xs={4}>
@@ -85,6 +124,8 @@ export default function PackageForm(props: StepProps) {
                                 name="width"
                                 label="Width"
                                 variant="standard"
+                                value={formValues.width}
+                                onChange={handleChange}
                             />
                         </Grid>
                         <Grid item xs={4}>
@@ -93,6 +134,8 @@ export default function PackageForm(props: StepProps) {
                                 name="height"
                                 label="Height"
                                 variant="standard"
+                                value={formValues.height}
+                                onChange={handleChange}
                             />
                         </Grid>
                     </Grid>
@@ -106,6 +149,8 @@ export default function PackageForm(props: StepProps) {
                         fullWidth
                         autoComplete="0"
                         variant="standard"
+                        value={formValues.customsValue}
+                        onChange={handleChange}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -113,7 +158,7 @@ export default function PackageForm(props: StepProps) {
                         <div>
                             <Button
                                 variant="contained"
-                                onClick={props.handleNext}
+                                onClick={handleNext}
                                 sx={{ mt: 1, mr: 1 }}
                             >
                                 Continue

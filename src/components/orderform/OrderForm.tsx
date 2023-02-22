@@ -11,10 +11,48 @@ import { Grid } from '@mui/material';
 import ContactForm from './ContactForm';
 import PackageForm from './PackageForm';
 import ShippingForm from './ShippingForm';
+import { Order } from './Props';
+
+
+const defaultOrder = {
+  shipper: {
+    firstName: '',
+    lastName: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    tel: '',
+    email: '',
+  },
+  receiver: {
+    firstName: '',
+    lastName: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    tel: '',
+    email: '',
+  },
+  productDescription: '',
+  product: '',
+  actualWeight: '',
+  noOfPackages: '',
+  length: '',
+  width: '',
+  height: '',
+  customsValue: ''
+};
 
 
 export default function OrderForm() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [order, updateOrder] = React.useState(defaultOrder);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -32,22 +70,22 @@ export default function OrderForm() {
     setActiveStep(step);
   };
 
+  const handleSetOrder = (order: Order) => {
+    updateOrder(order);
+  };
+
   const steps = [
     {
       label: 'Shipper Contact',
-      description: <ContactForm handleBack={handleBack} handleNext={handleNext}></ContactForm>
     },
     {
       label: 'Receiver Contact',
-      description: <ContactForm handleBack={handleBack} handleNext={handleNext}></ContactForm>
     },
     {
       label: 'Package Information',
-      description: <PackageForm handleBack={handleBack} handleNext={handleNext}></PackageForm>
     },
     {
       label: 'Shipping Information',
-      description: <ShippingForm handleBack={handleBack} handleNext={handleNext}></ShippingForm>
     }
   ];
 
@@ -69,7 +107,10 @@ export default function OrderForm() {
                 {step.label}
               </StepLabel>
               <StepContent>
-                {step.description}
+                {activeStep === 0 && <ContactForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ContactForm>}
+                {activeStep === 1 && <ContactForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ContactForm>}
+                {activeStep === 2 && <PackageForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></PackageForm>}
+                {activeStep === 3 && <ShippingForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ShippingForm>}
               </StepContent>
             </Step>
           ))}
