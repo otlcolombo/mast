@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import NewOrder from "./pages/NewOrder";
 import NoPage from "./pages/NoPage";
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
-          <Route path="blogs" element={<Orders />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="orders/new" element={<NewOrder />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
