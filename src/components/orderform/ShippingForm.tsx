@@ -8,6 +8,34 @@ import { Box, Button, FormControl, FormLabel, Radio, RadioGroup } from '@mui/mat
 import { StepProps } from './Props';
 
 export default function ShippingForm(props: StepProps) {
+  const [formData, setFormData] = React.useState({
+    billShippingCharges: props.order.billShippingCharges,
+    billDutyTaxes: props.order.billDutyTaxes,
+    serviceLevel: props.order.serviceLevel,
+    specialInstructions: props.order.specialInstructions,
+    references: props.order.references,
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value
+    }));
+  };
+
+  const handleNext = () => {
+    props.setOrder({
+      ...props.order,
+      billShippingCharges: formData.billShippingCharges,
+      billDutyTaxes: formData.billDutyTaxes,
+      serviceLevel: formData.serviceLevel,
+      specialInstructions: formData.specialInstructions,
+      references: formData.references
+    });
+    props.handleNext();
+  };
+
   return (
     <React.Fragment>
       <Grid container spacing={3}>
@@ -18,6 +46,8 @@ export default function ShippingForm(props: StepProps) {
               aria-label="Bill Shipping Charges"
               name="billShippingCharges"
               row
+              value={formData.billShippingCharges}
+              onChange={handleChange}
             >
               <FormControlLabel
                 value="Shipper"
@@ -41,9 +71,11 @@ export default function ShippingForm(props: StepProps) {
           <FormControl component="fieldset">
             <FormLabel id="demo-radio-buttons-group-label">Bill Duty & Taxes</FormLabel>
             <RadioGroup
-              aria-label="Bill Duty & Taxes<"
+              aria-label="Bill Duty & Taxes"
               name="billDutyTaxes"
               row
+              value={formData.billDutyTaxes}
+              onChange={handleChange}
             >
               <FormControlLabel
                 value="shipper"
@@ -70,6 +102,8 @@ export default function ShippingForm(props: StepProps) {
               aria-label="Service Level"
               name="billDutyTaxes"
               row
+              value={formData.serviceLevel}
+              onChange={handleChange}
             >
               <FormControlLabel
                 value="premier"
@@ -94,6 +128,8 @@ export default function ShippingForm(props: StepProps) {
             maxRows={4}
             fullWidth
             variant="standard"
+            value={formData.specialInstructions}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
@@ -106,6 +142,8 @@ export default function ShippingForm(props: StepProps) {
             maxRows={4}
             fullWidth
             variant="standard"
+            value={formData.references}
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12}>
@@ -113,7 +151,7 @@ export default function ShippingForm(props: StepProps) {
             <div>
               <Button
                 variant="contained"
-                onClick={props.handleNext}
+                onClick={handleNext}
                 sx={{ mt: 1, mr: 1 }}
               >
                 Continue

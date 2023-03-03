@@ -11,11 +11,13 @@ import { Grid } from '@mui/material';
 import ContactForm from './ContactForm';
 import PackageForm from './PackageForm';
 import ShippingForm from './ShippingForm';
-import { Order } from './Props';
+import { Contact, Order } from './Props';
+import OrderDetails from './OrderDetails';
 
 
 const defaultOrder = {
   shipper: {
+    companyName: '',
     firstName: '',
     lastName: '',
     address1: '',
@@ -28,6 +30,7 @@ const defaultOrder = {
     email: '',
   },
   receiver: {
+    companyName: '',
     firstName: '',
     lastName: '',
     address1: '',
@@ -46,9 +49,13 @@ const defaultOrder = {
   length: '',
   width: '',
   height: '',
-  customsValue: ''
+  customsValue: '',
+  billShippingCharges: '',
+  billDutyTaxes: '',
+  serviceLevel: '',
+  specialInstructions: '',
+  references: ''
 };
-
 
 export default function OrderForm() {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -74,6 +81,14 @@ export default function OrderForm() {
     updateOrder(order);
   };
 
+  const handleUpdateSender = (contact: Contact) => {
+    updateOrder((prevOrder) => ({ ...prevOrder, shipper: contact }));
+  }
+
+  const handleUpdateReceiver = (contact: Contact) => {
+    updateOrder((prevOrder) => ({ ...prevOrder, receiver: contact }));
+  }
+
   const steps = [
     {
       label: 'Shipper Contact',
@@ -97,34 +112,41 @@ export default function OrderForm() {
         </Grid>
       </Grid>
       <Box sx={{ maxWidth: 800 }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {steps.map((step, index) => (
-            <Step key={step.label}>
-              <StepLabel
-                onClick={handleStepClick(index)}
-                style={{ cursor: 'pointer' }}
-              >
-                {step.label}
-              </StepLabel>
-              <StepContent>
-                {activeStep === 0 && <ContactForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ContactForm>}
-                {activeStep === 1 && <ContactForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ContactForm>}
-                {activeStep === 2 && <PackageForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></PackageForm>}
-                {activeStep === 3 && <ShippingForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ShippingForm>}
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
+        {activeStep !== steps.length &&
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((step, index) => (
+              <Step key={step.label}>
+                <StepLabel
+                  onClick={handleStepClick(index)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <b>{step.label}</b>
+                </StepLabel>
+                <StepContent>
+                  {activeStep === 0 && <ContactForm handleBack={handleBack} handleNext={handleNext} setContact={handleUpdateSender} contact={order.shipper}></ContactForm>}
+                  {activeStep === 1 && <ContactForm handleBack={handleBack} handleNext={handleNext} setContact={handleUpdateReceiver} contact={order.receiver}></ContactForm>}
+                  {activeStep === 2 && <PackageForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></PackageForm>}
+                  {activeStep === 3 && <ShippingForm handleBack={handleBack} handleNext={handleNext} setOrder={handleSetOrder} order={order}></ShippingForm>}
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+        }
         {activeStep === steps.length && (
-          <Paper square elevation={0} sx={{ p: 3 }}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button>
-              Finish
-            </Button>
-            <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-              Reset
-            </Button>
-          </Paper>
+          <>
+            <OrderDetails order={order} />
+            <Paper square elevation={0} sx={{ p: 3 }}>
+              <Typography>All steps completed - please verify the details - Click finish to submit the order</Typography>
+              <Button
+                variant="contained"
+              >
+                Finish
+              </Button>
+              <Button onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                Back
+              </Button>
+            </Paper>
+          </>
         )}
       </Box>
     </>
